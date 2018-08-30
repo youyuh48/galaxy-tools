@@ -1,0 +1,7 @@
+categories: [Fastq Manipulation]
+description: Galaxy wrapper for the NanoPlot package.
+homepage_url: https://github.com/wdecoster/NanoPlot
+long_description: Plotting tool for long read sequencing data and alignments.
+name: nanoplot
+owner: youyuh48
+remote_repository_url: https://github.com/youyuh48/galaxy-tools/tree/master/tools/NanoPlot

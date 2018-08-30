@@ -1,0 +1,44 @@
+<tool id="NanoPlot" name="NanoPlot" version="0.1.0">
+  <description>Plotting scripts for long read sequencing data</description>
+  <requirements>
+    <requirement type="package" version="1.13.0">nanoplot</requirement>
+  </requirements>
+  <command detect_errors="exit_code">
+    <![CDATA[
+        NanoPlot
+          $barcoded
+          --summary "$input"
+          -o report
+          -t \${GALAXY_SLOTS:-1}
+
+        && mv report/NanoPlot-report.html output.html
+    ]]>
+  </command>
+  <inputs>
+    <param name="input" type="data" format="txt" label="Albacore's summary file"/>
+    <param name="barcoded" type="boolean" label="barcoded" truevalue="--barcoded" falsevalue="" help="Use if you want to split the summary file by barcode"/>
+  </inputs>
+  <outputs>
+    <data format="html" name="output" from_work_dir="output.html" label="${tool.name} on ${on_string}"/>
+  </outputs>
+  <tests>
+      <test>
+          <param name="input" value="sequencing_summary.txt"/>
+          <output name="output" file="NanoPlot-report.html" ftype="html"/>
+      </test>
+  </tests>
+  <help>
+    <![CDATA[
+        usage: NanoPlot [-h] [-v] [-t THREADS] [--verbose] [--store] [--raw] [-o OUTDIR] [-p PREFIX] [--maxlength N]
+                [--minlength N] [--drop_outliers] [--downsample N] [--loglength] [--percentqual] [--alength]
+                [--minqual N] [--readtype {1D,2D,1D2}] [--barcoded] [-c COLOR]
+                [-f {eps,jpeg,jpg,pdf,pgf,png,ps,raw,rgba,svg,svgz,tif,tiff}]
+                [--plots [{kde,hex,dot,pauvre} [{kde,hex,dot,pauvre} ...]]] [--listcolors] [--no-N50] [--N50]
+                [--title TITLE]
+                (--fastq file [file ...] | --fasta file [file ...] | --fastq_rich file [file ...] | --fastq_minimal file [file ...] | --summary file [file ...] | --bam file [file ...] | --cram file [file ...] | --pickle pickle)
+    ]]>
+  </help>
+  <citations>
+    <citation type="doi">10.1093/bioinformatics/bty149</citation>
+  </citations>
+</tool>
