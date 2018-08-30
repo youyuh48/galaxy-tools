@@ -1,0 +1,7 @@
+categories: [Metagenomics]
+description: Galaxy wrapper for the centrifuge-kreport
+homepage_url: https://github.com/infphilo/centrifuge
+long_description: Classifier for metagenomic sequences
+name: centrifuge_kreport
+owner: youyuh48
+remote_repository_url: https://github.com/youyuh48/galaxy-tools/tree/master/tools/centrifuge

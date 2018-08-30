@@ -1,0 +1,36 @@
+  0.00	0	0	U	0	unclassified
+ 75.00	12	0	-	1	root
+ 75.00	12	0	-	131567	  cellular organisms
+ 75.00	12	0	D	2759	    Eukaryota
+ 75.00	12	0	-	33154	      Opisthokonta
+ 75.00	12	0	K	33208	        Metazoa
+ 75.00	12	0	-	6072	          Eumetazoa
+ 75.00	12	0	-	33213	            Bilateria
+ 75.00	12	0	-	33511	              Deuterostomia
+ 75.00	12	0	P	7711	                Chordata
+ 75.00	12	0	-	89593	                  Craniata
+ 75.00	12	0	-	7742	                    Vertebrata
+ 75.00	12	0	-	7776	                      Gnathostomata
+ 75.00	12	0	-	117570	                        Teleostomi
+ 75.00	12	0	-	117571	                          Euteleostomi
+ 75.00	12	0	-	8287	                            Sarcopterygii
+ 75.00	12	0	-	1338369	                              Dipnotetrapodomorpha
+ 75.00	12	0	-	32523	                                Tetrapoda
+ 75.00	12	0	-	32524	                                  Amniota
+ 75.00	12	0	C	40674	                                    Mammalia
+ 75.00	12	0	-	32525	                                      Theria
+ 75.00	12	0	-	9347	                                        Eutheria
+ 75.00	12	0	-	1437010	                                          Boreoeutheria
+ 75.00	12	0	-	314145	                                            Laurasiatheria
+ 50.00	8	0	-	91561	                                              Cetartiodactyla
+ 50.00	8	0	-	9845	                                                Ruminantia
+ 50.00	8	0	-	35500	                                                  Pecora
+ 50.00	8	0	F	9895	                                                    Bovidae
+ 50.00	8	0	-	27592	                                                      Bovinae
+ 50.00	8	0	G	9903	                                                        Bos
+ 50.00	8	8	S	9913	                                                          Bos taurus
+ 25.00	4	0	O	33554	                                              Carnivora
+ 25.00	4	0	-	379584	                                                Caniformia
+ 25.00	4	0	F	9632	                                                  Ursidae
+ 25.00	4	0	G	9645	                                                    Ailuropoda
+ 25.00	4	4	S	9646	                                                      Ailuropoda melanoleuca
