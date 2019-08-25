@@ -1,0 +1,52 @@
+<tool id="medaka_consensus" name="medaka_consensus" version="0.1.0">
+  <description>Assembly polishing via neural networks</description>
+  <requirements>
+    <requirement type="package" version="0.8.1">medaka</requirement>
+  </requirements>
+  <version_command>medaka --version</version_command>
+  <command detect_errors="exit_code">
+    <![CDATA[
+medaka_consensus
+-t \${GALAXY_SLOTS:-2}
+-i '$fastq_input'
+-d '$reference_input'
+-m '$medaka_model'
+
+&& mv medaka/consensus.fasta consensus.fasta
+    ]]>
+  </command>
+  <inputs>
+    <param name="fastq_input" type="data" format="fastqsanger,fastqsanger.gz,fasta" label="Select fastq/fasta dataset (Reads)"/>
+    <param name="reference_input" type="data" format="fasta,fasta.gz" label="Select fasta dataset (Assembly)"/>
+    <param name="medaka_model" type="select" label="Select correct model according to the basecaller used" >
+      <option value="r941_min_high">r941_min_high</option>
+      <option value="r941_min_fast">r941_min_fast</option>
+      <option value="r941_trans">r941_trans</option>
+      <option value="r941_flip213">r941_flip213</option>
+      <option value="r941_flip235">r941_flip235</option>
+      <option value="r941_prom_fast">r941_prom_fast</option>
+      <option value="r941_prom_high">r941_prom_high</option>
+      <option value="r10_min_high">r10_min_high</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data name="output1" format="fasta" from_work_dir="consensus.fasta" label="${tool.name} on ${on_string}"/>
+  </outputs>
+  <tests>
+    <test>
+      <param name="fastq_input" value="long_reads_low_depth.fastq.gz"/>
+      <param name="reference_input" value="reference.fasta"/>
+      <param name="medaka_model" value="r941_min_high"/>
+      <output name="output1" file="consensus.fasta"/>
+    </test>
+  </tests>
+  <help>
+    <![CDATA[
+Assembly polishing via neural networks. The input assembly should be preprocessed with racon.
+    ]]>
+  </help>
+  <citations>
+    <citation type="bibtex">
+      @misc{githubmedaka, url = {https://github.com/nanoporetech/medaka}, }</citation>
+  </citations>
+</tool>
