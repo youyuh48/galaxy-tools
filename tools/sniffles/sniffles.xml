@@ -5,9 +5,10 @@
   </requirements>
   <command detect_errors="exit_code">
     <![CDATA[
+ln -f -s '$input' input.bam &&
 sniffles
 -t \${GALAXY_SLOTS:-2}
--m '$input'
+-m input.bam
 --${output_format} '$output'
 ## general_options
 #if $general_options.s:
