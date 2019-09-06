@@ -1,0 +1,7 @@
+categories: [Assembly]
+description: Galaxy wrapper for medaka_consensus
+homepage_url: https://github.com/nanoporetech/medaka
+long_description: Assembly polishing via neural networks
+name: medaka_consensus
+owner: youyuh48
+remote_repository_url: https://github.com/youyuh48/galaxy-tools/tree/master/tools/medaka
