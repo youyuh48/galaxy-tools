@@ -1,0 +1,50 @@
+<tool id="kraken_biom" name="kraken-biom" version="0.1.0">
+    <description>Create BIOM-format tables from Kraken output</description>
+    <requirements>
+        <requirement type="package" version="1.0.1">kraken-biom</requirement>
+    </requirements>
+    <command detect_errors="exit_code">
+<![CDATA[
+#import re
+#set $files_to_convert = []
+#for $i, $file in enumerate( $input_files ):
+    #set $safename = re.sub('[^\w\-_\.]', '_', $file.element_identifier)
+    #set $newfile = $safename + ".report"
+    #silent files_to_convert.append(str($newfile))
+    ln -s '$file' ./$newfile &&
+#end for
+
+kraken-biom
+#for $file in $files_to_convert:
+    '$file'
+#end for
+-o '$output1'
+]]>
+    </command>
+    <inputs>
+        <param type="data" name="input_files" format="tabular" multiple="True"
+        label="Kraken report output" help="Select taxonomy classification report produced by Kraken" />
+    </inputs>
+    <outputs>
+        <data name="output1" format="biom2" label="${tool.name} on ${on_string}" />
+    </outputs>
+    <help>
+        <![CDATA[
+.. class:: infomark
+
+**What it does**
+
+The program takes as input, one or more files output from the kraken-report tool. Each file is parsed and the counts for each OTU (operational taxonomic unit) are recorded, along with database ID (e.g. NCBI), and lineage. The extracted data are then stored in a BIOM table where each count is linked to the Sample and OTU it belongs to. Sample IDs are extracted from the input filenames (everything up to the '.').
+
+]]>
+    </help>
+    <citations>
+        <citation type="bibtex">
+@misc{githubKrakenTools,
+  title = {KrakenTools},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  url = {https://github.com/smdabdoub/kraken-biom},
+}</citation>
+    </citations>
+</tool>

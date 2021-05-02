@@ -2,5 +2,6 @@
 <toolbox monitor="true">
   <section id="mytools" name="My tools">
     <tool file="/media/extract_kraken_reads.xml" />
+    <tool file="/media/kraken_biom.xml" />
   </section>
 </toolbox>
