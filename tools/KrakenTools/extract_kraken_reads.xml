@@ -1,0 +1,54 @@
+<tool id="extract_kraken_reads" name="extract_kraken_reads" version="0.1.0">
+    <description>Extract reads classified at any user-specified taxonomy IDs.</description>
+    <requirements>
+        <requirement type="package" version="1.2">krakentools</requirement>
+    </requirements>
+    <command detect_errors="exit_code">
+        <![CDATA[
+extract_kraken_reads.py
+-k '$classification'
+-s '$seq'
+-t $taxid
+--max $maxreads
+-o '$output1'
+    ]]>
+    </command>
+    <inputs>
+        <param type="data" name="classification" format="tabular" label="Kraken classification output" />
+        <param type="data" name="seq" format="fasta,fastq" label="Select the same fasta/fastq reads used" />
+        <param type="text" name="taxid" label="Taxonomy ID[s] of reads to extract (space-delimited)" />
+        <param name="maxreads" type="integer" value="10" min="1" label="Maximum number of reads to save" />
+    </inputs>
+    <outputs>
+        <data name="output1" format="fasta" label="${tool.name} on ${on_string}" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="classification" value="kraken2_class.tsv" />
+            <param name="seq" value="tid1613.fasta" />
+            <param name="taxid" value="1613" />
+            <param name="taxid" value="1" />
+            <output name="output1" file="out.fasta" />
+        </test>
+    </tests>
+    <help>
+<![CDATA[
+.. class:: infomark
+
+**What it does**
+
+This program extract reads classified at any user-specified taxonomy IDs. User must specify the Kraken output file, the sequence file(s), and at least one taxonomy ID.
+
+As of April 19, 2021, this script is compatible with KrakenUniq/Kraken2Uniq reports.
+]]>
+    </help>
+    <citations>
+        <citation type="bibtex">
+@misc{githubKrakenTools,
+  title = {KrakenTools},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  url = {https://github.com/jenniferlu717/KrakenTools},
+}</citation>
+    </citations>
+</tool>
