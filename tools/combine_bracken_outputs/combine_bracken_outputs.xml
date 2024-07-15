@@ -1,0 +1,33 @@
+<tool id="combine_bracken_outputs" name="Combine Bracken Outputs" version="0.1.0+galaxy0" profile="19.01">
+    <requirements>
+        <requirement type="package" version="2.7">bracken</requirement>
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+#set dataset_names = []
+#for $report in $reports
+    #silent dataset_names.append(str($report.element_identifier))
+#end for
+
+combine_bracken_outputs.py
+--names "${",".join($dataset_names)}"
+--files
+#for $report in $reports 
+    '$report'
+#end for
+--output '$output'
+    ]]></command>
+    <inputs>
+        <param name="reports" label="Bracken report files" type="data" format="tabular" min="2" multiple="True"/>
+    </inputs>
+    <outputs>
+        <data name="output" format="tabular" label="Combined Bracken report file"/>
+    </outputs>
+    <citations>
+        <citation type="bibtex">
+            title = {combine_bracken_outputs},
+            publisher = {GitHub},
+            journal = {GitHub repository},
+            url = {https://github.com/jenniferlu717/Bracken}
+        </citation>
+    </citations>
+</tool>

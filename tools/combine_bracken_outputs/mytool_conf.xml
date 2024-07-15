@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<toolbox monitor="true">
+  <section id="mytools" name="My tools">
+    <tool file="/media/combine_bracken_outputs.xml" />
+  </section>
+</toolbox>
