@@ -1,0 +1,7 @@
+categories: [Metagenomics]
+description: Combines multiple Bracken output files for comparison
+homepage_url: https://github.com/jenniferlu717/Bracken/
+long_description: Combines multiple Bracken output files for comparison
+name: combine_bracken_outputs
+owner: youyuh48
+remote_repository_url: https://github.com/youyuh48/galaxy-tools/tree/master/tools/combine_bracken_outputs
