@@ -1,4 +1,4 @@
-name	taxonomy_id	taxonomy_lvl	S1_num	S1_frac	S2_num	S2_frac
+name	taxonomy_id	taxonomy_lvl	sample1_output_species_abundance.txt_num	sample1_output_species_abundance.txt_frac	sample2_output_species_abundance.txt_num	sample2_output_species_abundance.txt_frac
 Streptococcus sanguinis	1305	S	21	0.00000	21	0.00000
 Streptococcus suis	1307	S	23	0.00000	23	0.00000
 Streptococcus gordonii	1302	S	10	0.00000	10	0.00000

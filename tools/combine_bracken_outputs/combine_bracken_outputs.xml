@@ -1,15 +1,14 @@
-<tool id="combine_bracken_outputs" name="Combine Bracken Outputs" version="0.1.0+galaxy0" profile="19.01">
+<tool id="combine_bracken_outputs" name="Combine Bracken Outputs" version="0.1.0+galaxy0" profile="21.05">
+    <description>to combines multiple Bracken output files into a single tabular file</description>
     <requirements>
         <requirement type="package" version="2.7">bracken</requirement>
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
-#set dataset_names = []
-#for $report in $reports
-    #silent dataset_names.append(str($report.element_identifier))
-#end for
+## Extract dataset names and replace any commas to prevent breaking the --names argument
+#set names = ','.join([str($report.element_identifier).replace(',', '_') for $report in $reports])
 
 combine_bracken_outputs.py
---names "${",".join($dataset_names)}"
+--names '$names'
 --files
 #for $report in $reports 
     '$report'
@@ -17,17 +16,39 @@ combine_bracken_outputs.py
 --output '$output'
     ]]></command>
     <inputs>
-        <param name="reports" label="Bracken report files" type="data" format="tabular" min="2" multiple="True"/>
+        <param name="reports" type="data" format="tabular" min="2" multiple="true" label="Bracken report files" help="Select two or more Bracken output files to combine."/>
     </inputs>
     <outputs>
-        <data name="output" format="tabular" label="Combined Bracken report file"/>
+        <data name="output" format="tabular" label="${tool.name} on ${on_string}"/>
     </outputs>
+    <tests>
+        <test>
+            <param name="reports" value="sample1_output_species_abundance.txt,sample2_output_species_abundance.txt" ftype="tabular"/>
+            <output name="output" file="combined.tsv" ftype="tabular"/>
+        </test>
+    </tests>
+    <help><![CDATA[
+**What it does**
+
+This tool runs the `combine_bracken_outputs.py` script to merge multiple Bracken abundance estimation files into a single consolidated tabular file. This is highly useful for downstream comparative analysis and visualization across multiple metagenomic samples.
+
+**Inputs**
+
+Multiple Bracken output files (tabular format). You must provide at least two files.
+
+**Outputs**
+
+A single combined tabular file containing the read counts and abundance fraction estimates across all the provided samples.
+    ]]></help>
     <citations>
+        <citation type="doi">10.7717/peerj-cs.104</citation>
         <citation type="bibtex">
-            title = {combine_bracken_outputs},
-            publisher = {GitHub},
-            journal = {GitHub repository},
-            url = {https://github.com/jenniferlu717/Bracken}
+            @misc{githubbracken,
+              title = {Bracken (Bayesian Reestimation of Abundance with KrakEN)},
+              publisher = {GitHub},
+              journal = {GitHub repository},
+              url = {https://github.com/jenniferlu717/Bracken}
+            }
         </citation>
     </citations>
 </tool>
