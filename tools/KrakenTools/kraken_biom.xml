@@ -1,35 +1,90 @@
-<tool id="kraken_biom" name="kraken-biom" version="0.1.0">
+<tool id="kraken_biom" name="kraken-biom" version="1.2.0+galaxy0" profile="21.09">
     <description>Create BIOM-format tables from Kraken output</description>
     <requirements>
-        <requirement type="package" version="1.0.1">kraken-biom</requirement>
+        <requirement type="package" version="1.2.0">kraken-biom</requirement>
     </requirements>
-    <command detect_errors="exit_code">
-<![CDATA[
+    <command detect_errors="exit_code"><![CDATA[
+#import os
 #import re
-#set $files_to_convert = []
-#for $i, $file in enumerate( $input_files ):
-    #set $safename = re.sub('[^\w\-_\.]', '_', $file.element_identifier)
-    #set $newfile = $safename + ".report"
-    #silent files_to_convert.append(str($newfile))
-    ln -s '$file' ./$newfile &&
+
+## 1. Convert input files to symlinks based on sample names, stripping dataset extensions
+#for $file in $input_files:
+    #set $identifier = $file.element_identifier
+    #set $base, $ext = os.path.splitext(str($identifier))
+    #if $ext.lower() in ['.tabular', '.tsv', '.txt', '.dat', '.csv', '.report']:
+        #set $identifier = $base
+    #end if
+    #set $safename = re.sub('[^\w\-_\.]', '_', str($identifier))
+    #set $safename = $safename + '.report'
+    ln -s '$file' '$safename' &&
 #end for
 
-kraken-biom
-#for $file in $files_to_convert:
-    '$file'
-#end for
+## 2. Run kraken-biom with selected options
+kraken-biom *.report
+#if $max_rank:
+    --max '$max_rank'
+#end if
+#if $min_rank:
+    --min '$min_rank'
+#end if
+--fmt '$fmt'
+$gzip
+#if $metadata:
+    --metadata '$metadata'
+#end if
 -o '$output1'
 ]]>
     </command>
     <inputs>
-        <param type="data" name="input_files" format="tabular" multiple="True"
-        label="Kraken report output" help="Select taxonomy classification report produced by Kraken" />
+        <param name="input_files" type="data" format="tabular" multiple="true" label="Kraken report output" help="Select taxonomy classification report files produced by Kraken." />
+        <param name="max_rank" type="select" argument="--max" optional="true" label="Maximum taxonomic rank" help="Write BIOM tables with taxonomic data up to this rank.">
+            <option value="D">Domain (D)</option>
+            <option value="P">Phylum (P)</option>
+            <option value="C">Class (C)</option>
+            <option value="O">Order (O)</option>
+            <option value="F">Family (F)</option>
+            <option value="G">Genus (G)</option>
+            <option value="S">Species (S)</option>
+        </param>
+        <param name="min_rank" type="select" argument="--min" optional="true" label="Minimum taxonomic rank" help="Write BIOM tables with taxonomic data down to this rank.">
+            <option value="D">Domain (D)</option>
+            <option value="P">Phylum (P)</option>
+            <option value="C">Class (C)</option>
+            <option value="O">Order (O)</option>
+            <option value="F">Family (F)</option>
+            <option value="G">Genus (G)</option>
+            <option value="S">Species (S)</option>
+        </param>
+        <param argument="--fmt" type="select" label="Output format" help="Specify the file format for the output BIOM table.">
+            <option value="hdf5" selected="true">HDF5 (biom2)</option>
+            <option value="json">JSON (biom1)</option>
+            <option value="tsv">TSV (Tabular)</option>
+        </param>
+        <param argument="--gzip" type="boolean" truevalue="--gzip" falsevalue="" checked="false" label="Gzip compression" help="Compress the output table with gzip (only applicable for JSON/TSV formats)." />
+        <param argument="--metadata" type="data" format="tsv,tabular" optional="true" label="Sample metadata file" help="Optional metadata file in TSV or Tabular format. The first column must contain the sample IDs (matching the input file names without extensions)." />
     </inputs>
     <outputs>
-        <data name="output1" format="biom2" label="${tool.name} on ${on_string}" />
+        <data name="output1" format="biom2" label="${tool.name} on ${on_string}">
+            <change_format>
+                <when input="fmt" value="json" format="json" />
+                <when input="fmt" value="tsv" format="tabular" />
+            </change_format>
+        </data>
     </outputs>
-    <help>
-        <![CDATA[
+    <tests>
+        <!-- Test 1: Run with default options (output format is HDF5/biom2 by default) -->
+        <test>
+            <param name="input_files" value="Report_Kraken2_SRR1750080.tabular,Report_Kraken2_SRR1750082.tabular,Report_Kraken2_SRR1750092.tabular" ftype="tabular" />
+            <output name="output1" file="table.biom" ftype="biom2" />
+        </test>
+        <!-- Test 2: Run with metadata (tabular format) specified -->
+        <test>
+            <param name="input_files" value="Report_Kraken2_SRR1750080.tabular,Report_Kraken2_SRR1750082.tabular,Report_Kraken2_SRR1750092.tabular" ftype="tabular" />
+            <param name="metadata" value="metadata.tabular" ftype="tabular" />
+            <output name="output1" file="table_meta.biom" ftype="biom2" />
+        </test>
+    </tests>
+    <help><![CDATA[
 .. class:: infomark
 
 **What it does**
@@ -45,6 +100,7 @@ The program takes as input, one or more files output from the kraken-report tool
   publisher = {GitHub},
   journal = {GitHub repository},
   url = {https://github.com/smdabdoub/kraken-biom},
-}</citation>
+}
+        </citation>
     </citations>
 </tool>
