@@ -1,8 +1,7 @@
 categories: [Metagenomics]
-description: Galaxy wrapper for KrakenTools
+description: Galaxy wrapper for kraken-biom
 homepage_url: https://github.com/jenniferlu717/KrakenTools
-long_description: A suite of scripts to be used for post-analysis of Kraken/KrakenUniq/Kraken2/Bracken
-  results.
-name: kraken_tools
+long_description: Create BIOM-format tables (http://biom-format.org) from Kraken output (http://ccb.jhu.edu/software/kraken/).
+name: kraken_biom_1
 owner: youyuh48
 remote_repository_url: https://github.com/youyuh48/galaxy-tools/tree/master/tools/KrakenTools
