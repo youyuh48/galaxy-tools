@@ -1,6 +1,5 @@
 <data_managers>
-    <data_manager id="data_manager_taxonkit_download" path="data_managers/data_manager_taxonkit">
-        <tool file="data_managers/data_manager_taxonkit.xml"/>
+    <data_manager id="data_manager_taxonkit_download" file="data_managers/data_manager_taxonkit.xml">
         <data_table name="taxonkit_database">
             <output>
                 <column name="value" />
