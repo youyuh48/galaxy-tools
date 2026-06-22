@@ -6,6 +6,6 @@ homepage_url: https://github.com/youyuh48/galaxy-tools
 long_description: |
     Download and populate the NCBI Taxonomy database for TaxonKit
 name: data_manager_taxonkit
-owner: iuc
+owner: youyuh48
 remote_repository_url: https://github.com/youyuh48/galaxy-tools
 type: unrestricted
