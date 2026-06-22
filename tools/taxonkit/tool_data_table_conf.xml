@@ -1,0 +1,6 @@
+<tables>
+    <table name="taxonkit_databases" comment_char="#">
+        <columns>value, name, path</columns>
+        <file path="/local_tools/taxonkit/tool-data/taxonkit_databases.loc" />
+    </table>
+</tables>

@@ -1,0 +1,11 @@
+categories:
+- Data Managers
+description: Download and populate the NCBI Taxonomy database for TaxonKit
+  tool data table.
+homepage_url: https://github.com/youyuh48/galaxy-tools
+long_description: |
+    Download and populate the NCBI Taxonomy database for TaxonKit
+name: data_manager_taxonkit
+owner: iuc
+remote_repository_url: https://github.com/youyuh48/galaxy-tools
+type: unrestricted

@@ -1,0 +1,7 @@
+categories: [Metagenomics]
+description: Galaxy wrapper for TaxonKit
+homepage_url: https://bioinf.shenwei.me/taxonkit/
+long_description: A Practical and Efficient NCBI Taxonomy Toolkit
+name: taxonkit
+owner: youyuh48
+remote_repository_url: https://github.com/youyuh48/galaxy-tools/tree/master/tools/taxonkit

@@ -1,0 +1,159 @@
+<tool id="taxonkit" name="TaxonKit" version="0.20.0+galaxy0" profile="21.05">
+    <description>TaxonKit - Practical, Efficient and Multi-platform Taxonomy Toolkit for NCBI</description>
+    <requirements>
+        <requirement type="package" version="0.20.0">taxonkit</requirement>
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+        ## Export the database path configured via Data Manager
+        export TAXONKIT_DB='$taxonkit_db.fields.path' &&
+        export TAXONKIT_THREADS=\${GALAXY_SLOTS:-2} &&
+
+        ## Construct and run the command line execution
+        taxonkit $mode.command
+            -i $mode.column_index
+            -j \${GALAXY_SLOTS:-2}
+
+            #if $mode.command == "lineage":
+                $mode.show_taxid
+                $mode.show_name
+            #elif $mode.command == "reformat":
+                -f '$mode.format_pattern'
+                $mode.fill_miss_rank
+                $mode.add_prefix
+                $mode.trim
+            #elif $mode.command == "filter":
+                -L '$mode.lower_rank'
+                -H '$mode.higher_rank'
+                $mode.equal_to
+                $mode.include_duplicated
+            #elif $mode.command == "lca":
+                $mode.skip_deleted
+            #end if
+
+            ## Target input file
+            '$input_file'
+
+            ## Redirect output to the specified dataset
+            > '$output_file'
+    ]]></command>
+    <inputs>
+        <!-- Input tabular dataset -->
+        <param name="input_file" type="data" format="tabular,tsv,txt" label="Input dataset" help="Select a tabular or tab-separated text file containing TaxIDs, taxonomy strings, or taxon names." />
+
+        <!-- Select pre-populated NCBI database via Data Manager table -->
+        <param name="taxonkit_db" type="select" label="NCBI Taxonomy Database">
+            <options from_data_table="taxonkit_databases">
+                <validator type="no_options" message="No NCBI Taxonomy database is registered. Please ask an administrator to run the TaxonKit Database Downloader." />
+            </options>
+        </param>
+
+        <!-- Subcommand options -->
+        <conditional name="mode">
+            <param name="command" type="select" label="Action/Subcommand">
+                <option value="lineage" selected="true">lineage (Retrieve lineage for TaxIDs)</option>
+                <option value="reformat">reformat (Format taxonomy strings into standard ranks)</option>
+                <option value="name2taxid">name2taxid (Query TaxIDs by scientific names)</option>
+                <option value="filter">filter (Filter TaxIDs by taxonomic rank range)</option>
+                <option value="lca">lca (Compute Lowest Common Ancestor for TaxIDs)</option>
+            </param>
+
+            <!-- Lineage options -->
+            <when value="lineage">
+                <param name="column_index" type="data_column" data_ref="input_file" use_header_names="true" label="Column containing TaxID" help="Select the column index that stores the query NCBI TaxID." />
+                <param name="show_taxid" type="boolean" truevalue="-t" falsevalue="" checked="false" label="Include TaxID lineage in the output (-t)" />
+                <param name="show_name" type="boolean" truevalue="-n" falsevalue="" checked="false" label="Include scientific name lineage in the output (-n)" />
+            </when>
+
+            <!-- Reformat options -->
+            <when value="reformat">
+                <param name="column_index" type="data_column" data_ref="input_file" use_header_names="true" label="Column containing taxonomy string" help="Select the column index containing lineage strings (e.g., 'cellular organisms;Bacteria;...')." />
+                <param name="format_pattern" type="text" value="{k};{p};{c};{o};{f};{g};{s}" label="Output format pattern (-f)" help="Define output ranks. Key: {k} (kingdom), {p} (phylum), {c} (class), {o} (order), {f} (family), {g} (genus), {s} (species)" />
+                <param name="fill_miss_rank" type="boolean" truevalue="-r" falsevalue="" checked="true" label="Fill missing ranks with dummy names (-r)" help="If a taxonomic rank is missing, fill it with the next higher available rank's name." />
+                <param name="add_prefix" type="boolean" truevalue="-P" falsevalue="" checked="false" label="Add taxonomic rank prefixes (-P)" help="Prepends rank prefixes like 'k__', 'p__', etc." />
+                <param name="trim" type="boolean" truevalue="-T" falsevalue="" checked="false" label="Do not display missing ranks below the current rank (-T)" />
+            </when>
+
+            <!-- Name2taxid options -->
+            <when value="name2taxid">
+                <param name="column_index" type="data_column" data_ref="input_file" use_header_names="true" label="Column containing scientific names" help="Select the column containing tax names." />
+            </when>
+
+            <!-- Filter options -->
+            <when value="filter">
+                <param name="column_index" type="data_column" data_ref="input_file" use_header_names="true" label="Column containing TaxID" help="Select the column containing TaxIDs to filter." />
+                <param name="lower_rank" type="select" label="Lower limit of taxonomic rank (-L)">
+                    <option value="any" selected="true">Any</option>
+                    <option value="superkingdom">Superkingdom</option>
+                    <option value="phylum">Phylum</option>
+                    <option value="class">Class</option>
+                    <option value="order">Order</option>
+                    <option value="family">Family</option>
+                    <option value="genus">Genus</option>
+                    <option value="species">Species</option>
+                </param>
+                <param name="higher_rank" type="select" label="Upper limit of taxonomic rank (-H)">
+                    <option value="any" selected="true">Any</option>
+                    <option value="superkingdom">Superkingdom</option>
+                    <option value="phylum">Phylum</option>
+                    <option value="class">Class</option>
+                    <option value="order">Order</option>
+                    <option value="family">Family</option>
+                    <option value="genus">Genus</option>
+                    <option value="species">Species</option>
+                </param>
+                <param name="equal_to" type="boolean" truevalue="-e" falsevalue="" checked="false" label="Keep only TaxIDs strictly matching the specified rank (-e)" />
+                <param name="include_duplicated" type="boolean" truevalue="-d" falsevalue="" checked="false" label="Allow duplicated or unconfirmed TaxIDs (-d)" />
+            </when>
+
+            <!-- LCA options -->
+            <when value="lca">
+                <param name="column_index" type="data_column" data_ref="input_file" use_header_names="true" label="Column containing TaxID list" help="Select the column containing space or comma-separated TaxIDs." />
+                <param name="skip_deleted" type="boolean" truevalue="-s" falsevalue="" checked="false" label="Skip deleted TaxIDs (-s)" />
+            </when>
+        </conditional>
+    </inputs>
+    <outputs>
+        <data name="output_file" format="tabular" label="TaxonKit output on ${on_string}" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_file" value="test_input.tsv" ftype="tabular" />
+            <param name="taxonkit_db" value="taxonkit_dummy_db" />
+            <conditional name="mode">
+                <param name="command" value="lineage" />
+                <param name="column_index" value="1" />
+            </conditional>
+            <output name="output_file" file="test_output.tsv" />
+        </test>
+    </tests>
+    <help><![CDATA[
+=====================================================
+TaxonKit - NCBI Taxonomy Toolkit Wrapper
+=====================================================
+
+TaxonKit is a command-line tool for querying and manipulating the NCBI taxonomy database, 
+designed to be fast, memory-efficient, and easy to integrate.
+
+Main Features
+-------------
+
+1. **lineage**
+   - Retrieves full lineage (taxonomic paths) for a list of taxonomic IDs.
+
+2. **reformat**
+   - Normalizes lineage strings to custom-defined formats (e.g., standard 7 ranks: domain, phylum, class, order, family, genus, species).
+   - Fills missing ranks using nearby higher rank levels to avoid blank fields in downstream analysis.
+
+3. **name2taxid**
+   - Map taxonomic names (scientific names) back into NCBI Taxonomy IDs.
+
+4. **filter**
+   - Filter taxonomy lines by rank bounds (e.g., retaining only genus or species level classifications).
+
+5. **lca**
+   - Computes the Lowest Common Ancestor (LCA) for multiple taxonomic IDs grouped in rows.
+    ]]></help>
+    <citations>
+        <citation type="doi">10.1016/j.jgg.2021.03.006</citation>
+    </citations>
+</tool>
